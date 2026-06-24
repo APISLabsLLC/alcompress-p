@@ -27,3 +27,12 @@ AlCompress is a high-performance compression library engineered for environments
 ```python
    from alcompress import compress_enterprise
    # Payload processing logic here
+
+### Requirements
+* **Runtime:** Windows 10/11 x64 or compatible runtime environment (required for `alcompress_core.dll` execution).
+* **Python:** 3.10+ (if using the Python FFI wrapper).
+* **Dependencies:** No external Python packages are required for basic operation. If using the provided scripts for data logging, ensure standard library support is enabled.
+
+### Dependency Management
+This project maintains a minimal footprint. To regenerate the dependency list for your local environment, you may use:
+`pipreqs ./ --force`
