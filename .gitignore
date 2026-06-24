@@ -1,0 +1,21 @@
+# --- Private Source (DO NOT DISTRIBUTE) ---
+alcompress_core.cpp
+
+# --- Build Artifacts ---
+*.obj
+*.lib
+*.exp
+*.ilk
+*.pdb
+
+# --- Environment & Cache ---
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Local Data & Secrets ---
+*.alc
+*.json
+*.local.yml
+.env
