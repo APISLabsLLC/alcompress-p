@@ -19,3 +19,9 @@ __pycache__/
 *.json
 *.local.yml
 .env
+
+# Ignore accidental command files
+cd
+dir
+echo
+python
