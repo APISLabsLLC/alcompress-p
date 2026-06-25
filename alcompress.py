@@ -5,6 +5,9 @@ import sys
 class ALcompress:
     def __init__(self, max_bits=16):
         self.max_bits = max_bits
+        # Pre-allocate a 10MB buffer for compression output (expandable if needed)
+        self.max_output_size = 10 * 1024 * 1024 
+        self.output_buffer = (ctypes.c_uint8 * self.max_output_size)()
         self.load_cpp_backend()
 
     def load_cpp_backend(self):
@@ -14,10 +17,10 @@ class ALcompress:
         try:
             self.cpp_lib = ctypes.CDLL(lib_path)
             self.cpp_lib.compress_enterprise.argtypes = [
-                ctypes.c_char_p,          # input_data
-                ctypes.c_int,             # input_length
-                ctypes.c_int,             # max_bits
-                ctypes.POINTER(ctypes.c_uint8) # output_bytes (Pre-allocated)
+                ctypes.c_char_p,              # input_data
+                ctypes.c_int,                 # input_length
+                ctypes.c_int,                 # max_bits
+                ctypes.POINTER(ctypes.c_uint8) # output_buffer
             ]
             self.cpp_lib.compress_enterprise.restype = ctypes.c_int
             self.has_cpp = True
@@ -25,21 +28,27 @@ class ALcompress:
             print(f"⚠️ C++ failed to load: {e}")
             self.has_cpp = False
 
-    def compress_to_bytes(self, raw_bytes: bytes) -> bytes:
-        # FIX: Remove the .encode() allocation completely. 
-        # Python passes the direct underlying C-pointer of the bytes object safely.
-        in_len = len(raw_bytes)
-        
+    def compress_persistent(self, data_buffer) -> bytes:
+        """
+        Processes memory-mapped data using a persistent, pre-allocated buffer.
+        """
         if not self.has_cpp:
             raise RuntimeError("Enterprise mode requires the compiled C++ binary.")
 
-        # Rigid Head safety margin allocation
-        output_buffer = (ctypes.c_uint8 * (in_len + 64))()
+        in_len = len(data_buffer)
         
-        # C++ crunches text AND packs bits concurrently
+        # Ensure our persistent buffer is large enough; if not, reallocate
+        if in_len + 64 > self.max_output_size:
+            self.max_output_size = in_len + 64
+            self.output_buffer = (ctypes.c_uint8 * self.max_output_size)()
+
+        # Get the direct memory pointer from the mmap object
+        data_ptr = (ctypes.c_char * in_len).from_buffer(data_buffer)
+        
+        # Execute C++ core
         compressed_size = self.cpp_lib.compress_enterprise(
-            raw_bytes, in_len, self.max_bits, output_buffer
+            data_ptr, in_len, self.max_bits, self.output_buffer
         )
         
-        # Slice out the exact resulting compressed bytes
-        return bytes(output_buffer[:compressed_size])
+        # Return a copy of the slice (or memoryview if you want zero-copy return)
+        return bytes(self.output_buffer[:compressed_size])
