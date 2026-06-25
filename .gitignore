@@ -30,6 +30,7 @@ __pycache__/
 *.json
 *.local.yml
 .env
+*.csv
 
 # Ignore accidental command/system files
 cd

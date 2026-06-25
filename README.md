@@ -7,7 +7,15 @@ Why AlCompress?
 * Agnostic Streaming: Designed for interleaved data feeds—perfect for scenarios where multiple sensor sources share a single network pipe.
 * Architecture: Decoupled Data Plane (Native C++ engine) and Control Plane (Python orchestration).
 Performance Metrics
-MetricPerformanceThroughput40+ MB/sWorst-Case LatencyDeterministic (Constant Time)DeploymentBinary-only (Drop-in DLL/EXE)Quick Start
+Metric
+Performance
+Throughput
+40+ MB/s
+Worst-Case Latency
+Deterministic (Constant Time)
+Deployment
+Binary-only (Drop-in DLL/EXE)
+Quick Start
 1. Prepare Environment: Ensure your native binaries (alcompress_core.dll and runner.exe) are placed in the /bin directory.
 2. Native Execution (Data Plane): Run the engine directly for low-latency processing:
 PowerShell
@@ -29,11 +37,10 @@ Repository Structure
 * /bin: (Ignored by Git) Compiled native binaries (.dll, .exe).
 * /wrappers: Python orchestration scripts and FFI wrappers.
 * /core: Source code for the native engine (private/unmanaged).
-Requirements
-* Runtime: Windows 10/11 x64.
-* Python: 3.10+ (for Control Plane usage).
-* Dependencies: No external Python packages are required for core operation.
-Version Control Note
+#### Requirements
+*  Runtime:** Windows 10/11 x64.
+*   Python:** 3.10+ (for Control Plane usage).
+*   Dependencies:** * `watchdog`: Used for real-time file system monitoring and automated compression.Version Control Note
 This repository tracks the Control Plane (Python) only. Native binaries in /bin and C++ source files in /core are excluded via .gitignore to protect proprietary logic and prevent binary bloat.
 License & Support
 * License: Proprietary - All rights reserved by APIs Labs LLC.
