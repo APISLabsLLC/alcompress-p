@@ -1,12 +1,22 @@
 # --- Private Source (DO NOT DISTRIBUTE) ---
+# Explicitly ignore the native engine source and build drivers
 alcompress_core.cpp
+runner.cpp
+runner.obj
+build.bat
 
 # --- Build Artifacts ---
-*.obj
 *.lib
 *.exp
 *.ilk
 *.pdb
+*.obj
+# Ignore the production-ready binary
+runner.exe
+
+# --- Output Directory ---
+# Keep the bin folder clean of committed binaries
+/bin/
 
 # --- Environment & Cache ---
 venv/
@@ -20,7 +30,7 @@ __pycache__/
 *.local.yml
 .env
 
-# Ignore accidental command files
+# Ignore accidental command/system files
 cd
 dir
 echo
